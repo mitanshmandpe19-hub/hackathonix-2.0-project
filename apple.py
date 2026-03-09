@@ -9,10 +9,16 @@ emails = [
     "Hello friend how are you",
     "Meeting tomorrow",
     "Congratulations you won prize",
-    "Let's study together"
+    "Let's study together",
+    "Congratulations! You have won iPhone",
+    "Urgent! Your account will be suspended",
+    "See you at the event tonight",
+    "thank you for your help",
+    "Your KYC is pending. Verify now to continue services",
+    "i will call you later"
 ]
 
-labels = [1, 1, 0, 0, 1, 0]
+labels = [1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0]
 
 vectorizer = CountVectorizer()
 X = vectorizer.fit_transform(emails)
@@ -20,6 +26,29 @@ X = vectorizer.fit_transform(emails)
 model = MultinomialNB()
 model.fit(X, labels)
 
+# Fraud keyword categories
+kyc_words = ["kyc", "verify", "aadhaar", "pan", "update details"]
+lottery_words = ["lottery", "winner", "won", "prize", "congratulations"]
+offer_words = ["offer", "free", "gift", "discount", "deal"]
+investment_words = ["investment", "profit", "earn money", "crypto"]
+
+def detect_category(text):
+    text = text.lower()
+
+    if any(word in text for word in kyc_words):
+        return "🏦 KYC Scam"
+
+    elif any(word in text for word in lottery_words):
+        return "🎉 Lottery Scam"
+
+    elif any(word in text for word in offer_words):
+        return "🎁 Fake Offer"
+
+    elif any(word in text for word in investment_words):
+        return "💰 Investment Scam"
+
+    else:
+        return "Unknown"
 
 def check_email():
     text = entry.get()
@@ -30,11 +59,18 @@ def check_email():
 
     spam_prob = probability[0][1] * 100
 
-    if result[0] == 1:
-        output_label.config(text=f"Spam {spam_prob:.2f}%")
-    else:
-        output_label.config(text=f"Not Spam {100-spam_prob:.2f}%")
+    category = detect_category(text)
 
+    if result[0] == 1:
+        output_label.config(
+            text=f"🚫 Spam {spam_prob:.2f}%\nType: {category}",
+            fg="red"
+        )
+    else:
+        output_label.config(
+            text=f"✅ Not Spam {100-spam_prob:.2f}%",
+            fg="green"
+        )
 
 # GUI --------
 def clear_text():
@@ -43,9 +79,8 @@ def clear_text():
 
 window = tk.Tk()
 window.title("Spam Email Detector")
-window.geometry("500x300")
+window.geometry("500x320")
 window.configure(bg="#f0f0f0")
-
 
 title = tk.Label(
     window,
@@ -55,7 +90,6 @@ title = tk.Label(
 )
 title.pack(pady=10)
 
-
 label = tk.Label(
     window,
     text="Enter Email Text:",
@@ -64,14 +98,12 @@ label = tk.Label(
 )
 label.pack()
 
-
 entry = tk.Entry(
     window,
     width=45,
     font=("Arial", 12)
 )
 entry.pack(pady=5)
-
 
 button = tk.Button(
     window,
@@ -83,17 +115,15 @@ button = tk.Button(
 )
 button.pack(pady=5)
 
-
 clear_btn = tk.Button(
     window,
     text="Clear",
     font=("Arial", 12),
     bg="red",
     fg="white",
-    command="clear_text"
+    command=clear_text
 )
 clear_btn.pack(pady=5)
-
 
 output_label = tk.Label(
     window,
@@ -102,6 +132,5 @@ output_label = tk.Label(
     bg="#f0f0f0"
 )
 output_label.pack(pady=10)
-
 
 window.mainloop()
