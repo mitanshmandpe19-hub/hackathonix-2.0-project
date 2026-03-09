@@ -16,10 +16,16 @@ emails = [
     "See you at the event tonight",
     "thank you for your help",
     "Your KYC is pending. Verify now to continue services",
-    "i will call you later"
+    "i will call you later",
+    "Congratulations! Your PAN card has been selected for an exclusive banking reward- click here to claim now",
+    "Urgent: Verify your Aadhaar details immediately to avoid suspension of your bank account",
+    "Dear customer, your bank account has unusual activity; provide your PAN and Aadhaar details to secure it",
+    "I applied for my pan card last week",
+    "The bank sends sms for every transaction",
+    "I checked my bank balance today"
 ]
 
-labels = [1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0]
+labels = [1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0]
 
 vectorizer = CountVectorizer()
 X = vectorizer.fit_transform(emails)
